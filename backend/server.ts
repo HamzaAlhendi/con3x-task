@@ -1,6 +1,15 @@
 const express = require("express");
 const app = express();
+
+const cors = require("cors");
 const { Web3 } = require("web3");
+
+const corsOptions = {
+  origin: "http://localhost:3000",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 const providerUrl =
   "https://mainnet.infura.io/v3/6f02afca226849bc8bd1428866e41b6f";
 const usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
@@ -35,20 +44,20 @@ app.get("/getBalance", async (req, res) => {
     );
   } catch (error) {
     console.error("Error fetching USDT balance:", error);
-    res.status(500).send("Error fetching USDT balance");
+    res.status(500).send("Error fetching USDT balance", error);
   }
 });
 
 app.get("/getBlock", async (req, res) => {
   try {
     const lastBlockNumber = await web3.eth.getBlockNumber();
-    res.send(`The last block number is: ${lastBlockNumber}`);
+    res.send(JSON.stringify({ lastBlockNumber: lastBlockNumber.toString() }));
   } catch (error) {
     console.error("Error fetching the last block number:", error);
-    res.status(500).send("Error fetching the last block number");
+    res.status(500).send("Error fetching the last block number", error);
   }
 });
 
 app.listen(4000, () => {
-  console.log("Server is running on port 3000");
+  console.log("server started on port 4000");
 });
